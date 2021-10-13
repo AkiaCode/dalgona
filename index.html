@@ -52,7 +52,7 @@
         reader.onload = function(e) {
             const img = new Image();
             img.onload = function() {
-                ctx.drawImage(img, 125, 30, img.width/6, img.height/6);
+                ctx.drawImage(img, 125, 30, 85, 85);
             };
             img.src = e.target.result;
             img.style.opacity = 0.3;
