@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>dalgona generator</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body onload="draw();">
+    <h2>dalgona generator</h2>
+    <canvas id="canvas"></canvas>
+    <label for="image_uploads">Choose images to upload (PNG, JPG)</label>
+    <label>And if you want to save, click the picture</label>
+    <input type="file" id="file" name="filename" accept="image/png, image/jpeg">
+</body>
+<style>
+    body {
+        position:fixed;
+        top:0;
+        left:0;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        width:100%;
+        height:100%;
+        flex-direction: column;
+    }
+</style>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    function draw() {
+        const img = new Image();
+        img.onload = function() {
+            canvas.height = canvas.width * (img.height / img.width);
+            const oc = document.createElement('canvas'),
+            octx = oc.getContext('2d');
+            oc.width = img.width * 0.5;
+            oc.height = img.height * 0.5;
+            octx.drawImage(img, 0, 0, oc.width, oc.height);
+            octx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5);
+            ctx.drawImage(oc, 0, 0, oc.width * 0.5, oc.height * 0.5,
+            0, 0, canvas.width, canvas.height);
+        };
+        img.src = './dalgona.png';
+    }
+
+    function updateImageDisplay() {
+        const file = document.getElementById('file').files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 125, 30, img.width/6, img.height/6);
+            };
+            img.src = e.target.result;
+            img.style.opacity = 0.3;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function saveImage() {
+        const img = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = 'dalgona.png';
+        link.href = img;
+        link.click();
+    }
+
+    document.addEventListener('change', updateImageDisplay);
+    canvas.addEventListener('click', saveImage);
+</script>
+</html>
